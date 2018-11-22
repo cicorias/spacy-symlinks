@@ -28,18 +28,8 @@ def symlink_to(link, target):
 
 
 def symlink_remove(link):
-  if(os.path.isdir( path2str(link))): # this should only be on Py2.7.
-    os.rmdir( path2str(link))
+  # https://stackoverflow.com/questions/26554135/cant-delete-unlink-a-symlink-to-directory-in-python-windows
+  if(os.path.isdir(path2str(link))): # this should only be on Py2.7 and windows
+    os.rmdir(path2str(link))
   else:
     os.unlink(path2str(link))
-
-  # if is_windows and is_python3:
-  #   if link.exists() and link.is_symlink():
-  #     link.unlink()
-  # elif is_windows and link.exists(): # is_symlink fails on Py27
-  #   os.rmdir( path2str(link) )
-  #   link.unlink()
-  # elif is_windows:
-  #   raise NotImplementedError('cannot unlink as neither exists nor is symlink or not windows')
-  # else:
-  #   link.unlink()

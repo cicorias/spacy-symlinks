@@ -14,21 +14,14 @@ def link_local_path():
 @pytest.fixture(scope='function')
 def setup_target(request):
   target = Path(target_local_path())
-  if target.exists():
-    print('target exists skipping mkdir')
-  else:
-    print('creating temp dir for test {}'.format( target.absolute() ))
+  if not target.exists():
     os.mkdir( path2str(target) )
-    target.exists()
 
-  # yield -- need to cleanup even if assertion fails
+  # yield -- need to cleanup even if assertion fails so not using yield
   # https://github.com/pytest-dev/pytest/issues/2508#issuecomment-309934240
   def cleanup():  
     symlink_remove( Path(link_local_path() ) )
-    print('removing target link {}'.format(  Path(target_local_path()).absolute() ))
     os.rmdir( target_local_path()  )
-    #os.rmdir( path2str(link))
-    print('done cleanup')
 
   request.addfinalizer(cleanup)
 
@@ -39,6 +32,4 @@ def test_create_symlink_windows(setup_target):
   assert target.exists()
 
   symlink_to(link, target)
-
   assert link.exists()
-  # assert link.is_symlink()
